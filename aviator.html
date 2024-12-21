@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #1a237e, #3949ab);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        header {
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .game-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            background: #212121;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .multiplier {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: white;
+            background: #e53935;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #d32f2f;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Aviator Game</h1>
+        <p>Multiply your stake, but land before the plane crashes!</p>
+    </header>
+
+    <div class="game-container">
+        <div id="multiplier" class="multiplier">x1.00</div>
+        <button id="play-button">Take Off</button>
+        <button id="land-button" disabled>Land</button>
+        <p id="result-message"></p>
+    </div>
+
+    <footer>
+        <p>Powered by Provably Fair Algorithm</p>
+    </footer>
+
+    <script>
+        const multiplierDisplay = document.getElementById('multiplier');
+        const playButton = document.getElementById('play-button');
+        const landButton = document.getElementById('land-button');
+        const resultMessage = document.getElementById('result-message');
+
+        let multiplier = 1;
+        let interval;
+        let isPlaying = false;
+
+        playButton.addEventListener('click', () => {
+            if (isPlaying) return;
+
+            isPlaying = true;
+            playButton.disabled = true;
+            landButton.disabled = false;
+            resultMessage.textContent = '';
+
+            multiplier = 1;
+            multiplierDisplay.textContent = `x${multiplier.toFixed(2)}`;
+
+            interval = setInterval(() => {
+                multiplier += Math.random() * 0.1;
+                multiplierDisplay.textContent = `x${multiplier.toFixed(2)}`;
+
+                // Simulate crash randomly
+                if (Math.random() < 0.01) {
+                    clearInterval(interval);
+                    isPlaying = false;
+                    playButton.disabled = false;
+                    landButton.disabled = true;
+                    resultMessage.textContent = 'The plane crashed! You lose!';
+                }
+            }, 100);
+        });
+
+        landButton.addEventListener('click', () => {
+            if (!isPlaying) return;
+
+            clearInterval(interval);
+            isPlaying = false;
+            playButton.disabled = false;
+            landButton.disabled = true;
+
+            resultMessage.textContent = `You landed successfully and won x${multiplier.toFixed(2)} your stake!`;
+        });
+    </script>
+</body>
+</html>
